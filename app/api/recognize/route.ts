@@ -1,0 +1,9 @@
+import { env } from 'cloudflare:workers';
+import { getChatGPTUser } from '../../chatgpt-auth';
+import { recognizeImage, VisionError } from '../../../server/vision.mjs';
+import palette from '../../../public/studio/palette.json';
+export const dynamic='force-dynamic';
+const active=new Set<string>();
+const recent=new Map<string,number[]>();
+const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+export async function POST(request:Request){const user=await getChatGPTUser();if(!user)return json({error:'请登录后识别图纸。'},401);const origin=request.headers.get('origin');if(origin&&origin!==new URL(request.url).origin)return json({error:'请求来源无效。'},403);if(!request.headers.get('content-type')?.includes('application/json'))return json({error:'请求格式无效。'},415);if(Number(request.headers.get('content-length'))>12100000)return json({error:'图片过大，请缩小识别区域。'},413);const now=Date.now(),times=(recent.get(user.userId)||[]).filter(t=>now-t<60000);if(active.has(user.userId)||times.length>=8)return json({error:'识别任务正在处理中，或请求过于频繁，请稍后重试。'},429);active.add(user.userId);recent.set(user.userId,[...times,now]);try{const text=await request.text();if(text.length>12100000)return json({error:'图片过大，请缩小识别区域。'},413);let body;try{body=JSON.parse(text)}catch{return json({error:'请求格式无效。'},400)}const vars=env as unknown as Record<string,string>;const result=await recognizeImage({image:body.image,panels:body.panels||[],context:body.context||null,focus:body.focus||null,key:vars.OPENAI_API_KEY,codes:palette.map(c=>c.code)});return json(result)}catch(error){if(error instanceof VisionError)return json({error:error.message,code:error.code},error.status);return json({error:'识别遇到异常，请重试。'},500)}finally{active.delete(user.userId);for(const[id,ts]of recent)if(!ts.some(t=>Date.now()-t<60000))recent.delete(id)}}

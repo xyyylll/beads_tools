@@ -1,0 +1,26 @@
+preview.png
+
+eng.traineddata
+
+.env*
+
+node_modules/
+dist/
+.openai/execution-profile.json
+.wrangler/
+.next/
+.dev.vars*
+
+.sites-runtime/
+.openai/connectors-preview-port
+
+*.tsbuildinfo
+
+.vinext/
+
+# Only the blank configuration template is committed.
+!.env.example
+.DS_Store
+.npmrc
+*.pem
+*.key

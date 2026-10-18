@@ -1,0 +1,111 @@
+{
+  "time": "2026-10-18T09:59:26.781Z",
+  "model": "gpt-5.6-sol",
+  "passed": true,
+  "charts": [
+    {
+      "name": "仪玄",
+      "expectedRows": 32,
+      "actualRows": 32,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": 2120,
+      "expectedTotal": 2120,
+      "warnings": [],
+      "usage": {
+        "inputTokens": 8559,
+        "outputTokens": 698,
+        "estimatedUsd": 0.048196
+      },
+      "passed": true
+    },
+    {
+      "name": "未命名角色",
+      "expectedRows": 18,
+      "actualRows": 18,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": 2120,
+      "expectedTotal": 2120,
+      "warnings": [],
+      "usage": {
+        "inputTokens": 6308,
+        "outputTokens": 403,
+        "estimatedUsd": 0.033292
+      },
+      "passed": true
+    },
+    {
+      "name": "招财邦布",
+      "expectedRows": 28,
+      "actualRows": 28,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": 1874,
+      "expectedTotal": 1874,
+      "warnings": [],
+      "usage": {
+        "inputTokens": 8259,
+        "outputTokens": 897,
+        "estimatedUsd": 0.050976
+      },
+      "passed": true
+    },
+    {
+      "name": "莱特",
+      "expectedRows": 14,
+      "actualRows": 14,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": 2120,
+      "expectedTotal": 2120,
+      "warnings": [],
+      "usage": {
+        "inputTokens": 6744,
+        "outputTokens": 336,
+        "estimatedUsd": 0.033696
+      },
+      "passed": true
+    },
+    {
+      "name": "蕾米埃尔",
+      "expectedRows": 22,
+      "actualRows": 22,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": null,
+      "expectedTotal": 2120,
+      "warnings": [
+        "图片未单独印出“所需豆子数量”。"
+      ],
+      "usage": {
+        "inputTokens": 4868,
+        "outputTokens": 484,
+        "estimatedUsd": 0.029152
+      },
+      "passed": true
+    },
+    {
+      "name": "邦布1",
+      "expectedRows": 7,
+      "actualRows": 7,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "total": 336,
+      "expectedTotal": 336,
+      "warnings": [],
+      "usage": {
+        "inputTokens": 6392,
+        "outputTokens": 119,
+        "estimatedUsd": 0.027948
+      },
+      "passed": true
+    }
+  ]
+}

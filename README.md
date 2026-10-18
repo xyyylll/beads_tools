@@ -6,7 +6,7 @@
 
 [观看 30 秒 Demo](bead-studio-demo-30s.mp4) · [下载视频](https://github.com/xyyylll/beads_tools/raw/refs/heads/main/bead-studio-demo-30s.mp4) · [产品入口](https://xinyu-bead-studio.honest-mouse-6474.chatgpt.site/)
 
-> 产品入口目前需要访问权限。本仓库提供产品介绍和演示素材，尚未包含工具源码。
+> 产品入口目前需要访问权限。本仓库包含工具源码、6 张初始图纸、初始库存数据和演示素材，可独立在本地启动。
 
 ## 产品流程一览
 
@@ -98,7 +98,113 @@ flowchart LR
 
 库存按图纸颗数统计，未自动计入丢失、损耗等实际差异；屏幕色块仅作参考，选豆时请以实物色号为准。
 
-## 仓库文件
+## 本地运行
+
+### 环境要求
+
+- Node.js **22.13 或更高版本**，以及 npm。
+- 首次安装需要联网下载依赖。
+- 日常使用不需要 Python、Sites 插件或 Cloudflare 账号。
+
+### 1. 获取源码并安装依赖
+
+```bash
+git clone https://github.com/xyyylll/beads_tools.git
+cd beads_tools
+npm run install:ci
+```
+
+安装命令使用仓库中的 `package-lock.json` 锁定依赖版本，包含开发和可选依赖。
+
+### 2. 启动工具
+
+```bash
+npm run dev
+```
+
+浏览器打开 **http://127.0.0.1:5173/**。本地开发模式使用内置模拟登录，无需登录 ChatGPT；首次访问会自动完成本地登录跳转。
+
+端口被占用时，可指定其他端口：
+
+```bash
+npm run dev -- --port 8792
+```
+
+**不配置密钥也能使用**库存管理、图纸管理、手动填写用量，以及初始 6 张图纸的专注模式。图片用量识别、新上传图纸首次生成专注定位需要自行配置模型密钥。
+
+### 3. 可选：配置视觉模型
+
+复制空白模板：
+
+```bash
+cp .env.example .env.local
+```
+
+Windows PowerShell 可使用 `Copy-Item .env.example .env.local`。
+
+在本机编辑 `.env.local`，为 `OPENAI_API_KEY` 填入你自己的 OpenAI API key，然后重启 `npm run dev`。模板中的值为空；仓库不提供任何可用凭证。
+
+- 密钥由服务端读取，不能写入 `public/` 或带有 `VITE_` 前缀的变量。
+- `.env.local`、其他环境文件及本地运行目录已加入 `.gitignore`；只有空白的 `.env.example` 会被提交。
+- API 账户需要有可用额度，ChatGPT 订阅与 API 额度分开。
+- 当前模型配置见 [`server/vision.mjs`](server/vision.mjs)，用量识别和定位共用此配置。更换模型后应重新验证图片输入与结构化输出兼容性。
+
+### 4. 检查与构建
+
+```bash
+npm test
+npm run typecheck
+npm run build
+```
+
+自动测试使用固定数据和模拟模型响应，**不调用付费 API**。本次源码发布已通过 47 项测试；覆盖初始图纸位置、库存状态流转、识别结果校验和定位缓存。
+
+`npm run build` 生成 Cloudflare Worker 构建产物。现有生产认证与 Sites 代理集成；独立部署时需接入相应认证。普通本地使用请运行 `npm run dev`，它不是必须连接线上站点的客户端。
+
+### 初始数据与迁移
+
+首次在一个浏览器站点中打开时，加载仓库内的示例数据：
+
+- MARD 221 色，每色购入 1,000 颗，H2、H7 各购入 4,000 颗，共 **227,000 颗**。
+- 初始 6 张图纸均已完成一次，共消耗 **10,690 颗**，理论余量 **216,310 颗**。
+- 库存与图纸用量未计损耗。初始图纸和定位数据位于 `public/studio/`。
+
+本地地址与线上域名的浏览器存储相互独立。要继续使用已有记录，请先从原站点导出备份，再在本地导入。更换浏览器、主机名或端口也不会自动迁移数据。
+
+### 常见问题
+
+| 情况 | 处理方式 |
+| --- | --- |
+| 识别提示“尚未配置模型凭证” | 检查项目根目录的 `.env.local`，填好 `OPENAI_API_KEY` 后重启服务 |
+| 识别提示额度不足 | 检查 API 账户账单和项目权限，补充额度后重试 |
+| 换端口后看不到旧图纸 | 不同地址使用不同存储；通过导出、导入备份迁移 |
+| 端口 5173 被占用 | 使用 `npm run dev -- --port 8792` |
+| 安装或启动失败 | 先确认 Node.js 版本满足要求，再运行 `npm run install:ci` |
+
+## 源码结构
+
+```text
+app/                      页面入口、本地与生产认证、API 路由
+  api/recognize/          图纸用量识别接口
+  api/grid/               网格与格内色号识别接口
+public/studio/            图纸收藏、库存管理、专注模式前端
+  images/                 6 张初始图纸
+  seed.json               初始图纸及用量
+  palette.json            MARD 色号参考
+  grids.json              初始图纸的已校准定位
+server/                   模型提示词、响应校验与调用逻辑
+scripts/                  本地启动、依赖安装、离线校准及验收脚本
+build/                    Worker 构建与本地开发适配
+lib/                      运行时辅助模块
+reports/                  已有验收报告
+tests/                   自动测试
+```
+
+日常前端交互从 [`public/studio/app.js`](public/studio/app.js) 开始；库存状态规则见 [`pattern-lifecycle.mjs`](public/studio/pattern-lifecycle.mjs)，专注渲染见 [`bead-guide.mjs`](public/studio/bead-guide.mjs)。
+
+初始图纸的离线定位校准说明见 [`scripts/grid-data/README.md`](scripts/grid-data/README.md)。这些可选 Python 工具不参与普通页面启动。原部署的站点 ID、实际密钥、浏览器个人数据与构建缓存未包含在本仓库中。
+
+## 演示素材
 
 | 文件 | 说明 |
 | --- | --- |
@@ -106,4 +212,3 @@ flowchart LR
 | [demo-cover.jpg](demo-cover.jpg) | 视频封面 |
 | [docs/product-workflow.png](docs/product-workflow.png) | 功能模块与六步产品流程图 |
 | [demo-subtitles.zh-CN.srt](demo-subtitles.zh-CN.srt) | 可单独使用的中文字幕与时间轴 |
-| [README.md](README.md) | 产品介绍与使用规则 |

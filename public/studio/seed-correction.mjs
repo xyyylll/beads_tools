@@ -1,0 +1,2 @@
+export function findSeedCorrections(state,seed){const corrected=seed.find(p=>p.id==='0');if(!corrected||corrected.usage.F10!==6)return[];const old={...corrected.usage,F18:6};delete old.F10;return state.patterns.filter(p=>p.image==='images/0.jpg'&&Object.keys(p.usage).length===Object.keys(old).length&&Object.entries(old).every(([c,n])=>p.usage[c]===n))}
+export function applySeedCorrections(patterns){for(const p of patterns){p.usage.F10=p.usage.F18;delete p.usage.F18}}

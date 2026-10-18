@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "unitTests": 36,
+  "browserOrigin": "http://127.0.0.1:8781",
+  "fixture": "fresh browser-local seed, isolated from production",
+  "checks": {
+    "restoreRefundsAndReturnsPending": true,
+    "startKeepsStockAndPersistsPlan": true,
+    "statusFiltersExclusive": true,
+    "inProgressFocusWorks": true,
+    "completionDeductsPlannedTwoCharts": true,
+    "deleteDoesNotRefund": true,
+    "reloadPreservesDeletedConsumption": true,
+    "insufficientStockBlocksCompletion": true
+  },
+  "stockTotals": {
+    "initial": 216310,
+    "afterRestoreOne": 216646,
+    "inProgressTwo": 216646,
+    "afterCompleteTwo": 215974,
+    "afterDelete": 215974
+  },
+  "G5AfterDeleteAndReload": 874
+}
