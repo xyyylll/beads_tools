@@ -8,6 +8,14 @@
 
 > 产品入口目前需要访问权限。本仓库提供产品介绍和演示素材，尚未包含工具源码。
 
+## 产品流程一览
+
+按「导入图纸 → 识别核对 → 检查库存 → 开始制作 → 专注拼豆 → 完成扣库」串联功能模块与界面演示。
+
+[![豆屿功能模块与六步产品流程](docs/product-workflow.png)](docs/product-workflow.png)
+
+点击图片查看完整流程图。
+
 ## 产品演示
 
 [![豆屿产品 Demo：选中色号保留原色，其余豆子变为黑白](demo-cover.jpg)](bead-studio-demo-30s.mp4)
@@ -96,5 +104,6 @@ flowchart LR
 | --- | --- |
 | [bead-studio-demo-30s.mp4](bead-studio-demo-30s.mp4) | 30 秒产品实录，约 2 MB |
 | [demo-cover.jpg](demo-cover.jpg) | 视频封面 |
+| [docs/product-workflow.png](docs/product-workflow.png) | 功能模块与六步产品流程图 |
 | [demo-subtitles.zh-CN.srt](demo-subtitles.zh-CN.srt) | 可单独使用的中文字幕与时间轴 |
 | [README.md](README.md) | 产品介绍与使用规则 |
